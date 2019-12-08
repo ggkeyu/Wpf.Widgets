@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Blend for Visual Studio Version 16
+# Visual Studio Version 16
 VisualStudioVersion = 16.0.29519.87
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wpf.Widgets", "Wpf.Widgets\Wpf.Widgets.csproj", "{56C9604F-6EBD-4DEE-B7B9-8D60823ADEE8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wpf.Widgets.Demo", "Wpf.Widgets.Demo\Wpf.Widgets.Demo.csproj", "{F219BCA3-DD09-4299-8D9C-96346DD535A4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{56C9604F-6EBD-4DEE-B7B9-8D60823ADEE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{56C9604F-6EBD-4DEE-B7B9-8D60823ADEE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{56C9604F-6EBD-4DEE-B7B9-8D60823ADEE8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F219BCA3-DD09-4299-8D9C-96346DD535A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F219BCA3-DD09-4299-8D9C-96346DD535A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F219BCA3-DD09-4299-8D9C-96346DD535A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F219BCA3-DD09-4299-8D9C-96346DD535A4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

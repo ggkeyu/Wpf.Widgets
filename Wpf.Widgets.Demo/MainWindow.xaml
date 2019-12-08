@@ -1,0 +1,19 @@
+﻿<Window x:Class="Wpf.Widgets.Demo.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Wpf.Widgets.Demo"
+        xmlns:widgets="clr-namespace:Wpf.Widgets;assembly=Wpf.Widgets"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="10*"/>
+            <RowDefinition Height="90*"/>
+        </Grid.RowDefinitions>
+        <widgets:SearchBox Grid.Row="0" Margin="-400,0,0,0" x:Name="SearchBox_Search" Width="200" OnSearching="SearchBox_OnSearching" FontSize="16" Foreground="Green" PopupContentSelectionBrush="Purple" PopupContentForegroundBrush="DarkOrange" OnSearchResultCommited="SearchBox_OnSearchResultCommited" SearchIcon="Search_1.png" Text="初始化" OnTextCommited="SearchBox_Search_OnTextCommited"/>
+        <widgets:SearchBox Grid.Row="0" Margin="400,0,0,0" x:Name="SearchBox_Search1" Width="200" OnSearching="SearchBox_OnSearching" OnSearchResultCommited="SearchBox_OnSearchResultCommited" Text="初始化" OnTextCommited="SearchBox_Search_OnTextCommited"/>
+
+    </Grid>
+</Window>
