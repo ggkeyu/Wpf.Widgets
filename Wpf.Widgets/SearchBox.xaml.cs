@@ -37,40 +37,40 @@ namespace Wpf.Widgets
         }
 
         //注册搜索结果提交事件        
-        public static readonly RoutedEvent OnSearchResultCommitedEvent = EventManager.RegisterRoutedEvent("OnSearchResultCommitedEvent",
-            RoutingStrategy.Bubble, typeof(EventHandler<SearchBoxResultCommitedEventArgs>), typeof(SearchBox));
+        public static readonly RoutedEvent OnSearchResultCommittedEvent = EventManager.RegisterRoutedEvent("OnSearchResultCommittedEvent",
+            RoutingStrategy.Bubble, typeof(EventHandler<SearchBoxResultCommittedEventArgs>), typeof(SearchBox));
 
         /// <summary>
-        /// SearchResultCommited事件
+        /// SearchResultCommitted事件
         /// </summary>
-        public event EventHandler<SearchBoxResultCommitedEventArgs> OnSearchResultCommited
+        public event EventHandler<SearchBoxResultCommittedEventArgs> OnSearchResultCommitted
         {
             add
             {
-                AddHandler(OnSearchResultCommitedEvent, value);
+                AddHandler(OnSearchResultCommittedEvent, value);
             }
             remove
             {
-                RemoveHandler(OnSearchResultCommitedEvent, value);
+                RemoveHandler(OnSearchResultCommittedEvent, value);
             }
         }
 
         //文本提交事件        
-        public static readonly RoutedEvent OnTextCommitedEvent = EventManager.RegisterRoutedEvent("OnTextCommitedEvent",
-            RoutingStrategy.Bubble, typeof(EventHandler<SearchBoxTextCommitedEventArgs>), typeof(SearchBox));
+        public static readonly RoutedEvent OnTextCommittedEvent = EventManager.RegisterRoutedEvent("OnTextCommittedEvent",
+            RoutingStrategy.Bubble, typeof(EventHandler<SearchBoxTextCommittedEventArgs>), typeof(SearchBox));
 
         /// <summary>
-        /// SearchResultCommited事件
+        /// SearchResultCommitted事件
         /// </summary>
-        public event EventHandler<SearchBoxTextCommitedEventArgs> OnTextCommited
+        public event EventHandler<SearchBoxTextCommittedEventArgs> OnTextCommitted
         {
             add
             {
-                AddHandler(OnTextCommitedEvent, value);
+                AddHandler(OnTextCommittedEvent, value);
             }
             remove
             {
-                RemoveHandler(OnTextCommitedEvent, value);
+                RemoveHandler(OnTextCommittedEvent, value);
             }
         }
 
@@ -193,15 +193,15 @@ namespace Wpf.Widgets
         /// <summary>
         /// 强制调用提交事件(对于上一次的提交内容，如果这次提交相同的文本内容依旧会被处理)
         /// </summary>
-        public bool ForceCallTextCommitedEvent
+        public bool ForceCallTextCommittedEvent
         {
-            get { return (bool)GetValue(ForceCallTextCommitedEventProperty); }
-            set { SetValue(ForceCallTextCommitedEventProperty, value); }
+            get { return (bool)GetValue(ForceCallTextCommittedEventProperty); }
+            set { SetValue(ForceCallTextCommittedEventProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for ForceCallTextCommitedEvent.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty ForceCallTextCommitedEventProperty =
-            DependencyProperty.Register("ForceCallTextCommitedEvent", typeof(bool), typeof(SearchBox), new PropertyMetadata(false));
+        // Using a DependencyProperty as the backing store for ForceCallTextCommittedEvent.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ForceCallTextCommittedEventProperty =
+            DependencyProperty.Register("ForceCallTextCommittedEvent", typeof(bool), typeof(SearchBox), new PropertyMetadata(false));
 
 
 
@@ -211,7 +211,7 @@ namespace Wpf.Widgets
 
         private const int DefaultPopupDisplayItemCount = 6;
 
-        private string lastCommitedText = "";
+        private string lastCommittedText = "";
 
         private TextBox PART_TextBox = null;
         private Popup PART_Popup = null;
@@ -351,7 +351,7 @@ namespace Wpf.Widgets
                 PART_TextBox.Text = listBoxItem.Content.ToString();
                 PART_TextBox.CaretIndex = PART_TextBox.Text.Length;
                 fromSearchResult = false;
-                SearchBoxResultCommitedEventArgs eventArgs = new SearchBoxResultCommitedEventArgs(OnSearchResultCommitedEvent, this)
+                SearchBoxResultCommittedEventArgs eventArgs = new SearchBoxResultCommittedEventArgs(OnSearchResultCommittedEvent, this)
                 {
                     Selected = listBoxItem.Content
                 };
@@ -438,22 +438,22 @@ namespace Wpf.Widgets
 
         private void CommitCurrentText()
         {
-            if (!ForceCallTextCommitedEvent)
+            if (!ForceCallTextCommittedEvent)
             {
-                if (0 == string.Compare(lastCommitedText, Text, StringComparison.CurrentCulture))
+                if (0 == string.Compare(lastCommittedText, Text, StringComparison.CurrentCulture))
                 {
                     return;
                 }
             }
 
-            SearchBoxTextCommitedEventArgs eventArgs = new SearchBoxTextCommitedEventArgs(OnTextCommitedEvent, this)
+            SearchBoxTextCommittedEventArgs eventArgs = new SearchBoxTextCommittedEventArgs(OnTextCommittedEvent, this)
             {
                 Text = Text
             };
 
             RaiseEvent(eventArgs);
 
-            lastCommitedText = Text;
+            lastCommittedText = Text;
         }
 
         private void PART_TextBox_KeyDown(object sender, KeyEventArgs e)

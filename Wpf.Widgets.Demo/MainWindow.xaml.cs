@@ -27,20 +27,24 @@ namespace Wpf.Widgets.Demo
 
         private void SearchBox_OnSearching(object sender, SearchBoxSearchingEventArgs e)
         {
-            for (int i = 0; i < 12; ++i)
+            //e.Keyword就是搜索框中的文本
+            //e.Result是返回的结果集合
+            //循环添加12个选项..
+            for (int i = 0; i < 3; ++i)
             {
                 e.Result.Add(e.Keyword + i.ToString());
             }
         }
 
-        private void SearchBox_OnSearchResultCommited(object sender, SearchBoxResultCommitedEventArgs e)
+        private void SearchBox_OnSearchResultCommitted(object sender, SearchBoxResultCommittedEventArgs e)
         {
-
+            //键盘回车键按下或者鼠标左键点击选项调用
         }
 
-        private void SearchBox_Search_OnTextCommited(object sender, SearchBoxTextCommitedEventArgs e)
+        private void SearchBox_Search_OnTextCommitted(object sender, SearchBoxTextCommittedEventArgs e)
         {
-            MessageBox.Show(e.Text);
+            //在搜索框中按下回车键调用的事件
+            MessageBox.Show(this,e.Text);
         }
     }
 }

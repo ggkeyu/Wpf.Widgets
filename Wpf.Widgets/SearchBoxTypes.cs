@@ -37,16 +37,16 @@ namespace Wpf.Widgets
     /// <summary>
     /// 搜索结果已经提交
     /// </summary>
-    public sealed class SearchBoxResultCommitedEventArgs : RoutedEventArgs
+    public sealed class SearchBoxResultCommittedEventArgs : RoutedEventArgs
     {
         /// <summary>
         /// 提交的对象数据
         /// </summary>
         public object Selected { get; set; }
-        public SearchBoxResultCommitedEventArgs(RoutedEvent routedEvent, object source) : base(routedEvent, source) { }
+        public SearchBoxResultCommittedEventArgs(RoutedEvent routedEvent, object source) : base(routedEvent, source) { }
         protected override void InvokeEventHandler(Delegate genericHandler, object genericTarget)
         {
-            if (genericHandler is EventHandler<SearchBoxResultCommitedEventArgs> handler)
+            if (genericHandler is EventHandler<SearchBoxResultCommittedEventArgs> handler)
             {
                 handler(genericTarget, this);
             }
@@ -56,14 +56,14 @@ namespace Wpf.Widgets
     /// <summary>
     /// 搜索框文本已经提交
     /// </summary>
-    public sealed class SearchBoxTextCommitedEventArgs : RoutedEventArgs
+    public sealed class SearchBoxTextCommittedEventArgs : RoutedEventArgs
     {
         public string Text { get; internal set; }
 
-        public SearchBoxTextCommitedEventArgs(RoutedEvent routedEvent, object source) : base(routedEvent, source) { }
+        public SearchBoxTextCommittedEventArgs(RoutedEvent routedEvent, object source) : base(routedEvent, source) { }
         protected override void InvokeEventHandler(Delegate genericHandler, object genericTarget)
         {
-            if (genericHandler is EventHandler<SearchBoxTextCommitedEventArgs> handler)
+            if (genericHandler is EventHandler<SearchBoxTextCommittedEventArgs> handler)
             {
                 handler(genericTarget, this);
             }
