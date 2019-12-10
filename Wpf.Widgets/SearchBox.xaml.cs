@@ -303,10 +303,16 @@ namespace Wpf.Widgets
                 return false;
             }
             PART_ListBox.Items.Clear();
-            foreach (var s in Result)
+            for(int i = 0; i < Result.Length; ++i)
             {
+                object s = Result[i];
                 var res = new ListBoxItem() { Content = s };
                 res.MouseEnter += Res_MouseEnter;
+                //如果是最后一项,添加SizeCanged事件(这时候所有的选项大小都已经设置完毕)
+                //if(i == Result.Length - 1)
+                {
+                    res.SizeChanged += Res_SizeChanged;
+                }
                 PART_ListBox.Items.Add(res);
             }
             if (PART_ListBox.Items.Count != 0)
@@ -322,6 +328,11 @@ namespace Wpf.Widgets
             }
             PART_ListBox.ScrollIntoView(PART_ListBox.SelectedItem);
             return true;
+        }
+
+        private void Res_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            ListBox_SizeChanged();
         }
 
         private void Res_MouseEnter(object sender, MouseEventArgs e)
@@ -346,14 +357,15 @@ namespace Wpf.Widgets
         {
             if (sender is ListBoxItem listBoxItem)
             {
-                PART_Popup.IsOpen = false;
+                object selectedContent = listBoxItem.Content;
+                TryClosePopupWindow();
                 fromSearchResult = true;
-                PART_TextBox.Text = listBoxItem.Content.ToString();
+                PART_TextBox.Text = selectedContent.ToString();
                 PART_TextBox.CaretIndex = PART_TextBox.Text.Length;
                 fromSearchResult = false;
                 SearchBoxResultCommittedEventArgs eventArgs = new SearchBoxResultCommittedEventArgs(OnSearchResultCommittedEvent, this)
                 {
-                    Selected = listBoxItem.Content
+                    Selected = selectedContent
                 };
 
                 RaiseEvent(eventArgs);
@@ -408,6 +420,11 @@ namespace Wpf.Widgets
         }
 
         private void PART_ListBox_Loaded(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void ListBox_SizeChanged()
         {
             double height = 0.00d;
             int maxDisplayRow = PopupItemLimitCount;

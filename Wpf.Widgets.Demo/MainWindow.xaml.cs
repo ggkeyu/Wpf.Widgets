@@ -30,7 +30,7 @@ namespace Wpf.Widgets.Demo
             //e.Keyword就是搜索框中的文本
             //e.Result是返回的结果集合
             //循环添加12个选项..
-            for (int i = 0; i < 3; ++i)
+            for (int i = 0; i < 13; ++i)
             {
                 e.Result.Add(e.Keyword + i.ToString());
             }
