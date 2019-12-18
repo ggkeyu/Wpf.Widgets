@@ -617,7 +617,8 @@ namespace Wpf.Widgets
 
             SearchBoxTextCommittedEventArgs eventArgs = new SearchBoxTextCommittedEventArgs(OnTextCommittedEvent, this)
             {
-                Text = Text
+                Text = Text,
+                ClearText = false
             };
 
             RaiseEvent(eventArgs);
@@ -637,6 +638,11 @@ namespace Wpf.Widgets
             }
 
             lastCommittedText = Text;
+
+            if (eventArgs.ClearText)
+            {
+                PART_TextBox.Text = "";
+            }
         }
 
         private void PART_TextBox_KeyDown(object sender, KeyEventArgs e)

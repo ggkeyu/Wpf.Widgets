@@ -60,6 +60,8 @@ namespace Wpf.Widgets
     {
         public string Text { get; internal set; }
 
+        public bool ClearText { get; set; }
+
         public SearchBoxTextCommittedEventArgs(RoutedEvent routedEvent, object source) : base(routedEvent, source) { }
         protected override void InvokeEventHandler(Delegate genericHandler, object genericTarget)
         {

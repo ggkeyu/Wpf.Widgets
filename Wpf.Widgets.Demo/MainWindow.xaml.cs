@@ -45,6 +45,7 @@ namespace Wpf.Widgets.Demo
         {
             //在搜索框中按下回车键调用的事件
             SearchBox_Search1.WidthDisplay = SearchResultWindowWidthDisplay.Auto;
+            e.ClearText = true;
         }
 
         private void Window_PreviewMouseRightButtonUp(object sender, MouseButtonEventArgs e)
