@@ -69,4 +69,23 @@ namespace Wpf.Widgets
             }
         }
     }
+
+    /// <summary>
+    /// 搜索结果宽度显示类型
+    /// </summary>
+    public enum SearchResultWindowWidthDisplay
+    {
+        /// <summary>
+        /// 宽度取列表子项的最大宽度
+        /// </summary>
+        Auto,
+        /// <summary>
+        /// 和搜索框一样大小
+        /// </summary>
+        SameAsOwner,
+        /// <summary>
+        /// 固定宽度
+        /// </summary>
+        Fixed
+    }
 }

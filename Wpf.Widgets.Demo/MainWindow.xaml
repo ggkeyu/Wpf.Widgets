@@ -6,14 +6,13 @@
         xmlns:local="clr-namespace:Wpf.Widgets.Demo"
         xmlns:widgets="clr-namespace:Wpf.Widgets;assembly=Wpf.Widgets"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" WindowStartupLocation="CenterScreen">
-    <Grid>
+        Title="MainWindow" Height="450" Width="800" WindowStartupLocation="CenterScreen" Background="#FF574A4A" PreviewMouseRightButtonUp="Window_PreviewMouseRightButtonUp">
+    <Grid x:Name="grid_base">
         <Grid.RowDefinitions>
             <RowDefinition Height="10*"/>
             <RowDefinition Height="90*"/>
         </Grid.RowDefinitions>
         <widgets:SearchBox Grid.Row="0" Margin="-400,0,0,0" x:Name="SearchBox_Search" Width="200" OnSearching="SearchBox_OnSearching" FontSize="16" Foreground="Green" PopupContentSelectionBrush="Purple" PopupContentForegroundBrush="DarkOrange" OnSearchResultCommitted="SearchBox_OnSearchResultCommitted" SearchIcon="Search_1.png" Text="初始化" OnTextCommitted="SearchBox_Search_OnTextCommitted"/>
-        <widgets:SearchBox Grid.Row="0" Margin="400,0,0,0" x:Name="SearchBox_Search1" Width="200" OnSearching="SearchBox_OnSearching" OnSearchResultCommitted="SearchBox_OnSearchResultCommitted" Text="初始化" OnTextCommitted="SearchBox_Search_OnTextCommitted"/>
-
+        <widgets:SearchBox Grid.Row="0" Margin="400,0,0,0" x:Name="SearchBox_Search1" Width="200" OnSearching="SearchBox_OnSearching" OnSearchResultCommitted="SearchBox_OnSearchResultCommitted" Text="初始化" OnTextCommitted="SearchBox_Search_OnTextCommitted" Background="Gray" PopupBackground="Gray" WidthDisplay="SameAsOwner"/>
     </Grid>
 </Window>

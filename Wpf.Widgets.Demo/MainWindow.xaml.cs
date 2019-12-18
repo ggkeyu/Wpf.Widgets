@@ -44,7 +44,12 @@ namespace Wpf.Widgets.Demo
         private void SearchBox_Search_OnTextCommitted(object sender, SearchBoxTextCommittedEventArgs e)
         {
             //在搜索框中按下回车键调用的事件
-            MessageBox.Show(this,e.Text);
+            SearchBox_Search1.WidthDisplay = SearchResultWindowWidthDisplay.Auto;
+        }
+
+        private void Window_PreviewMouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            
         }
     }
 }

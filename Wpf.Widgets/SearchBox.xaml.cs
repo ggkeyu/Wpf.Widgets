@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -160,7 +162,7 @@ namespace Wpf.Widgets
         // 
         private static readonly DependencyPropertyKey HasTextPropertyKey = DependencyProperty.RegisterReadOnly("HasText", typeof(bool), typeof(SearchBox), new PropertyMetadata(false));
 
-        public static DependencyProperty HasTextProperty = HasTextPropertyKey.DependencyProperty;
+        public static readonly DependencyProperty HasTextProperty = HasTextPropertyKey.DependencyProperty;
 
         // 搜索框文本是否为空
         public bool HasText
@@ -205,6 +207,107 @@ namespace Wpf.Widgets
 
 
 
+        /// <summary>
+        /// 是否出现搜索图标
+        /// </summary>
+        public bool ShowSearchIcon
+        {
+            get { return (bool)GetValue(ShowSearchIconProperty); }
+            set { SetValue(ShowSearchIconProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for ShowSearchIcon.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ShowSearchIconProperty =
+            DependencyProperty.Register("ShowSearchIcon", typeof(bool), typeof(SearchBox), new PropertyMetadata(true));
+
+
+        /// <summary>
+        /// 弹出菜单的位置设定
+        /// </summary>
+        public PlacementMode PopupPlacement
+        {
+            get { return (PlacementMode)GetValue(PopupPlacementProperty); }
+            set { SetValue(PopupPlacementProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for PopupPlacement.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty PopupPlacementProperty =
+            DependencyProperty.Register("PopupPlacement", typeof(PlacementMode), typeof(SearchBox), new PropertyMetadata(PlacementMode.Bottom));
+
+
+        /// <summary>
+        /// 弹出窗口的背景颜色，如果不为null，那么将会覆盖控件的背景颜色
+        /// </summary>
+        public Brush PopupBackground
+        {
+            get { return (Brush)GetValue(PopupBackgroundProperty); }
+            set { SetValue(PopupBackgroundProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for PopupBackground.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty PopupBackgroundProperty =
+            DependencyProperty.Register("PopupBackground", typeof(Brush), typeof(SearchBox), new PropertyMetadata(null));
+
+        /// <summary>
+        /// 历史记录添加时的比较方法
+        /// </summary>
+        public StringComparison InputHistoryComparison
+        {
+            get { return (StringComparison)GetValue(InputHistoryComparisonProperty); }
+            set { SetValue(InputHistoryComparisonProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for InputHistoryComparison.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty InputHistoryComparisonProperty =
+            DependencyProperty.Register("InputHistoryComparison", typeof(StringComparison), typeof(SearchBox), new PropertyMetadata(StringComparison.OrdinalIgnoreCase));
+
+
+        /// <summary>
+        /// 历史记录的极限数量
+        /// </summary>
+        public int InputHistoriesLimitCount
+        {
+            get { return (int)GetValue(InputHistoriesLimitCountProperty); }
+            set { SetValue(InputHistoriesLimitCountProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for InputHistoriesLimitCount.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty InputHistoriesLimitCountProperty =
+            DependencyProperty.Register("InputHistoriesLimitCount", typeof(int), typeof(SearchBox), new PropertyMetadata(5));
+
+
+        /// <summary>
+        /// 搜索结果窗口宽度显示类型
+        /// </summary>
+        public SearchResultWindowWidthDisplay WidthDisplay
+        {
+            get { return (SearchResultWindowWidthDisplay)GetValue(WidthDisplayProperty); }
+            set 
+            {
+                SetValue(WidthDisplayProperty, value);
+            }
+        }
+
+        // Using a DependencyProperty as the backing store for WidthDisplay.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty WidthDisplayProperty =
+            DependencyProperty.Register("WidthDisplay", typeof(SearchResultWindowWidthDisplay), typeof(SearchBox), new PropertyMetadata(SearchResultWindowWidthDisplay.Auto));
+
+
+        /// <summary>
+        /// 搜索结果的窗口宽度(只有WidthDisplay设置为Fixed才会生效)
+        /// </summary>
+        public float SearchResultWindowWidth
+        {
+            get { return (float)GetValue(SearchResultWindowWidthProperty); }
+            set { SetValue(SearchResultWindowWidthProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for SearchResultWindowWidth.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty SearchResultWindowWidthProperty =
+            DependencyProperty.Register("SearchResultWindowWidth", typeof(float), typeof(SearchBox), new PropertyMetadata(150.0f));
+
+
+
         private bool fromSearchResult = false;
 
         private Point mousePosition = new Point(0, 0);
@@ -216,6 +319,15 @@ namespace Wpf.Widgets
         private TextBox PART_TextBox = null;
         private Popup PART_Popup = null;
         private ListBox PART_ListBox = null;
+
+        /// <summary>
+        /// 输入的历史记录
+        /// </summary>
+        private readonly List<string> inputHistories = new List<string>();
+
+        private bool fromInputHistory = false;
+
+        private int currentInputIndex = -1;
 
         public SearchBox()
         {
@@ -242,7 +354,7 @@ namespace Wpf.Widgets
         private void PART_TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             //如果是来自于搜索结果提交返回
-            if (fromSearchResult)
+            if (fromSearchResult || fromInputHistory)
             {
                 return;
             }
@@ -309,7 +421,7 @@ namespace Wpf.Widgets
                 var res = new ListBoxItem() { Content = s };
                 res.MouseEnter += Res_MouseEnter;
                 //如果是最后一项,添加SizeCanged事件(这时候所有的选项大小都已经设置完毕)
-                //if(i == Result.Length - 1)
+                if(i == Result.Length - 1)
                 {
                     res.SizeChanged += Res_SizeChanged;
                 }
@@ -400,28 +512,68 @@ namespace Wpf.Widgets
         {
             if (!PART_Popup.IsOpen)
             {
-                return;
+                if(inputHistories.Count == 0)
+                {
+                    return;
+                }
+                if (e.Key == Key.Up)
+                {
+                    currentInputIndex--;
+                    if (currentInputIndex < 0)
+                    {
+                        currentInputIndex = inputHistories.Count - 1;
+                    }
+                    if (currentInputIndex >= 0 && currentInputIndex < inputHistories.Count)
+                    {
+                        var input = inputHistories[currentInputIndex];
+                        fromInputHistory = true;
+                        PART_TextBox.Text = input;
+                        PART_TextBox.CaretIndex = PART_TextBox.Text.Length;
+                        fromInputHistory = false;
+                    }
+                    e.Handled = true;
+                }
+                else if (e.Key == Key.Down)
+                {
+                    currentInputIndex++;
+                    if (currentInputIndex >= inputHistories.Count)
+                    {
+                        currentInputIndex = 0;
+                    }
+                    if (currentInputIndex >= 0 && currentInputIndex < inputHistories.Count)
+                    {
+                        var input = inputHistories[currentInputIndex];
+                        fromInputHistory = true;
+                        PART_TextBox.Text = input;
+                        PART_TextBox.CaretIndex = PART_TextBox.Text.Length;
+                        fromInputHistory = false;
+                    }
+                    e.Handled = true;
+                }
             }
-            if (e.Key == Key.Enter)
+            else
             {
-                TryCommitSearchResult(PART_ListBox.SelectedItem);
-                e.Handled = true;
-            }
-            else if (e.Key == Key.Up)
-            {
-                TryMoveSelection(-1);
-                e.Handled = true;
-            }
-            else if (e.Key == Key.Down)
-            {
-                TryMoveSelection(1);
-                e.Handled = true;
+                if (e.Key == Key.Enter)
+                {
+                    TryCommitSearchResult(PART_ListBox.SelectedItem);
+                    e.Handled = true;
+                }
+                else if (e.Key == Key.Up)
+                {
+                    TryMoveSelection(-1);
+                    e.Handled = true;
+                }
+                else if (e.Key == Key.Down)
+                {
+                    TryMoveSelection(1);
+                    e.Handled = true;
+                }
             }
         }
 
         private void PART_ListBox_Loaded(object sender, RoutedEventArgs e)
         {
-
+            
         }
 
         private void ListBox_SizeChanged()
@@ -470,6 +622,20 @@ namespace Wpf.Widgets
 
             RaiseEvent(eventArgs);
 
+            bool bFound = false;
+            foreach(var i in inputHistories)
+            {
+                if (0 == string.Compare(i, Text, InputHistoryComparison)) 
+                {
+                    bFound = true;
+                    break;
+                }
+            }
+            if (!bFound)
+            {
+                AddInputhistory(Text);
+            }
+
             lastCommittedText = Text;
         }
 
@@ -494,6 +660,119 @@ namespace Wpf.Widgets
             {
                 SetValue(HasTextPropertyKey, !string.IsNullOrEmpty(Text));
             }
+        }
+
+        /// <summary>
+        /// 弹出窗口是否可见
+        /// </summary>
+        /// <returns></returns>
+        public bool PopupIsVisible()
+        {
+            return PART_Popup != null && PART_Popup.IsOpen;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="Input"></param>
+        public void AddInputhistory(string Input)
+        {
+            if (inputHistories.Count >= InputHistoriesLimitCount)
+            {
+                inputHistories.RemoveAt(0);
+            }
+            inputHistories.Add(Input);
+        }
+
+        /// <summary>
+        /// 清除历史输入记录
+        /// </summary>
+        public void ClearInputHistories()
+        {
+            inputHistories.Clear();
+            currentInputIndex = -1;
+        }
+
+        /// <summary>
+        /// 添加历史输入记录
+        /// </summary>
+        /// <param name="Reset">重置</param>
+        /// <param name="Input"></param>
+        public void AddInputHistories(bool Reset, params string[] Input)
+        {
+            if (Reset)
+            {
+                ClearInputHistories();
+            }
+            foreach(var i in Input)
+            {
+                AddInputhistory(i);
+            }
+        }
+
+        /// <summary>
+        /// 添加历史输入记录
+        /// </summary>
+        /// <param name="Reset"></param>
+        /// <param name="stringEnumerator"></param>
+        public void AddInputHistories(bool Reset, StringEnumerator stringEnumerator)
+        {
+            if (stringEnumerator == null)
+            {
+                return;
+            }
+            if (Reset)
+            {
+                ClearInputHistories();
+            }
+            while (stringEnumerator.MoveNext())
+            {
+                string s = stringEnumerator.Current;
+                AddInputhistory(s);
+            }
+        }
+
+        /// <summary>
+        /// 添加历史输入记录
+        /// </summary>
+        /// <param name="Reset"></param>
+        /// <param name="Input"></param>
+        public void AddInputHistories(bool Reset,IReadOnlyList<string> Input)
+        {
+            if (Reset)
+            {
+                ClearInputHistories();
+            }
+            foreach (var i in Input)
+            {
+                AddInputhistory(i);
+            }
+        }
+
+        /// <summary>
+        /// 添加历史输入记录
+        /// </summary>
+        /// <param name="Reset"></param>
+        /// <param name="Input"></param>
+        public void AddInputHistories(bool Reset,IReadOnlyCollection<string> Input)
+        {
+            if (Reset)
+            {
+                ClearInputHistories();
+            }
+            foreach (var i in Input)
+            {
+                AddInputhistory(i);
+            }
+        }
+
+        /// <summary>
+        /// 获取历史输入记录
+        /// </summary>
+        /// <returns></returns>
+        public string[] GetInputHistories()
+        {
+            return inputHistories.ToArray();
         }
     }
 }
